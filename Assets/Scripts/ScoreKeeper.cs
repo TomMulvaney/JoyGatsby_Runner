@@ -5,8 +5,10 @@ public class ScoreKeeper : Singleton<ScoreKeeper>
 {
 	[SerializeField]
 	private int m_baseIncreasePerSecond;
+	[SerializeField]
+	private int m_increasePerStage = 1;
 
-	int m_modifier = 1;
+	private int m_modifier = 1;
 
 	private float m_score = 0;
 	public float score
@@ -20,6 +22,7 @@ public class ScoreKeeper : Singleton<ScoreKeeper>
 	void Start()
 	{
 		StateMachine.Instance.OnStateChange += OnStateChange;
+		StageManager.Instance.OnStageUp += OnStageUp;
 	}
 
 	void Update()
@@ -27,9 +30,17 @@ public class ScoreKeeper : Singleton<ScoreKeeper>
 		m_score += m_baseIncreasePerSecond * m_modifier * Time.deltaTime;
 	}
 
-	public void SetModifier(int modifier, float duration = 5)
+	void OnStageUp(int stageNum)
+	{
+		m_baseIncreasePerSecond += m_increasePerStage;
+	}
+
+	public void SetModifier(int modifier, float duration)
 	{
 		m_modifier = modifier;
+
+		duration = Mathf.Clamp (duration, 0, duration);
+
 		StartCoroutine (ReturnToBase (duration));
 	}
 

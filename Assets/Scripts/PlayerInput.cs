@@ -6,41 +6,43 @@ public class PlayerInput : MonoBehaviour
 	[SerializeField]
 	private float m_dragThreshold;
 	[SerializeField]
-	private float m_canChangeWhileFalling;
+	private InputType m_inputType;
+
+	enum InputType
+	{
+		Flick,
+		Tap
+	}
 
 	float m_totalDeltaY;
 
 	void OnPress(bool pressed)
 	{
-		m_totalDeltaY = 0;
+		if (m_inputType == InputType.Flick) 
+		{
+			m_totalDeltaY = 0;
+		} 
+		else if (m_inputType == InputType.Tap && pressed) 
+		{
+			PlayerMove.Instance.ReverseGravity();
+			StateMachine.Instance.RequestChange(StateMachine.State.Falling);
+		}
 	}
 
 	void OnDrag(Vector2 delta)
 	{
-		/*
-		bool dragIsDown = delta.y < 0;
-		bool gravityIsDown = PlayerMove.Instance.gravityDirection == -1;
-
-		if (StateMachine.Instance.state == StateMachine.State.Grounded && dragIsDown != gravityIsDown) 
+		if (m_inputType == InputType.Flick) 
 		{
 			m_totalDeltaY += delta.y;
 
 			if (Mathf.Abs (m_totalDeltaY) >= m_dragThreshold) 
 			{
-				StateMachine.Instance.RequestChange(StateMachine.State.Falling);		
-			}
-		}
-		*/
+				bool gravReversed = PlayerMove.Instance.ReverseGravity (m_totalDeltaY);
 
-		m_totalDeltaY += delta.y;
-
-		if (Mathf.Abs (m_totalDeltaY) >= m_dragThreshold) 
-		{
-			bool gravReversed = PlayerMove.Instance.ReverseGravity(m_totalDeltaY);
-
-			if(gravReversed && StateMachine.Instance.state == StateMachine.State.Grounded)
-			{
-				StateMachine.Instance.RequestChange(StateMachine.State.Falling);
+				if (gravReversed && StateMachine.Instance.state == StateMachine.State.Grounded) 
+				{
+					StateMachine.Instance.RequestChange (StateMachine.State.Falling);
+				}
 			}
 		}
 	}

@@ -3,13 +3,6 @@ using System.Collections;
 
 public class PlayerMove : Singleton<PlayerMove> 
 {
-	[SerializeField]
-	float m_idleSpeed = 0.5f;
-	[SerializeField]
-	float m_gravityMagnitude = 0.5f;
-	[SerializeField]
-	private Phys.Direction m_startGravityDirection = Phys.Direction.Down;
-
 	private Phys.Direction m_gravityDirection;
 	public int gravityDirection
 	{
@@ -19,11 +12,34 @@ public class PlayerMove : Singleton<PlayerMove>
 		}
 	}
 
+	[SerializeField]
+	float m_horizontalSpeedStart = 0.5f;
+	[SerializeField]
+	float m_horizontalSpeedIncrement = 0.15f;
+	[SerializeField]
+	float m_verticalSpeed = 2f;
+	[SerializeField]
+	private Phys.Direction m_startGravityDirection = Phys.Direction.Down;
+
 	bool m_applyCounterForce = false;
+
+	float m_horizontalSpeed;
+
+	void Awake()
+	{
+		m_horizontalSpeed = m_horizontalSpeedStart;
+	}
+
+	void OnStageUp(int stageNum)
+	{
+		m_horizontalSpeed += m_horizontalSpeedIncrement;
+	}
 
 	public void ReverseGravity()
 	{
 		m_gravityDirection = m_gravityDirection == Phys.Direction.Down ? Phys.Direction.Up : Phys.Direction.Down;
+
+		m_applyCounterForce = StateMachine.Instance.state == StateMachine.State.Falling;
 	}
 
 	public bool ReverseGravity(float deltaY)
@@ -48,13 +64,14 @@ public class PlayerMove : Singleton<PlayerMove>
 		m_gravityDirection = m_startGravityDirection;
 
 		StateMachine.Instance.OnStateChange += OnStateChange;
+		StageManager.Instance.OnStageUp += OnStageUp;
 	}
 
 	void FixedUpdate () 
 	{
-		Vector3 idleVelocity = rigidbody.velocity;
-		idleVelocity.x = m_idleSpeed;
-		rigidbody.velocity = idleVelocity;
+		Vector3 velocity = rigidbody.velocity;
+		velocity.x = m_horizontalSpeed;
+		rigidbody.velocity = velocity;
 
 		if (StateMachine.Instance.state == StateMachine.State.Falling) 
 		{
@@ -66,12 +83,8 @@ public class PlayerMove : Singleton<PlayerMove>
 				m_applyCounterForce = false;
 			}
 
-			rigidbody.AddForce (new Vector3 (0, m_gravityMagnitude, 0) * (int)m_gravityDirection);		
+			rigidbody.AddForce (new Vector3 (0, m_verticalSpeed, 0) * (int)m_gravityDirection);		
 		} 
-		else if (StateMachine.Instance.state == StateMachine.State.Grounded) 
-		{
-
-		}
 	}
 
 	void OnStateChange(StateMachine.State newState)

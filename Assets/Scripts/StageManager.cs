@@ -31,6 +31,21 @@ public class StageManager : Singleton<StageManager>
 		m_stageDuration = m_startDuration;
 	}
 
+	void Start()
+	{
+		StateMachine.Instance.OnStateChange += OnStateChange;
+	}
+
+	void OnStateChange(StateManager.State newState)
+	{
+		if (newState == StateMachine.State.Death) 
+		{
+			m_stage = 0;
+			m_stageTimeElapsed = 0;
+			m_stageDuration = m_startDuration;
+		}
+	}
+
 	void Update()
 	{
 		m_stageTimeElapsed += Time.deltaTime;

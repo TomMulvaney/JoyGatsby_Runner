@@ -25,6 +25,8 @@ public class PlayerMove : Singleton<PlayerMove>
 
 	float m_horizontalSpeed;
 
+	float m_targetGroundedPosY;
+
 	void Awake()
 	{
 		m_horizontalSpeed = m_horizontalSpeedStart;

@@ -39,7 +39,7 @@ public class PlayerInput : MonoBehaviour
 			{
 				bool gravReversed = PlayerMove.Instance.ReverseGravity (m_totalDeltaY);
 
-				if (gravReversed && StateMachine.Instance.state == StateMachine.State.Grounded) 
+				if (gravReversed) 
 				{
 					StateMachine.Instance.RequestChange (StateMachine.State.Falling);
 				}

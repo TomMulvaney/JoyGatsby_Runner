@@ -36,7 +36,7 @@ public class StageManager : Singleton<StageManager>
 		StateMachine.Instance.OnStateChange += OnStateChange;
 	}
 
-	void OnStateChange(StateManager.State newState)
+	void OnStateChange(StateMachine.State newState)
 	{
 		if (newState == StateMachine.State.Death) 
 		{

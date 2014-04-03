@@ -64,6 +64,8 @@ public class CollisionDetection : MonoBehaviour
 				Debug.DrawLine(origin.position + m_debugLineOffset, origin.position + m_debugLineOffset + (direction * m_castDistance), Color.red);
 			}
 		}
+
+		Debug.Log ("hit.collider: " + hit.collider);
 		
 		return hit;
 	}
@@ -71,40 +73,31 @@ public class CollisionDetection : MonoBehaviour
 	// TODO: Don't do state checks in this method. Find another way, this is messy
 	void HandleCollision(RaycastHit hit)
 	{
-		if (hit.collider != null) 
-		{
+		if (hit.collider != null) {
 			bool isVertical = Mathf.Approximately (Mathf.Abs (Vector3.Dot (hit.normal, Vector3.right)), 0);
 
 			string hitTag = hit.collider.gameObject.tag;
 
-			switch (hitTag) 
-			{
+			switch (hitTag) {
 			case "Untagged":
-				if (isVertical) 
-				{
-					if (StateMachine.Instance.state == StateMachine.State.Falling) 
-					{
+				if (isVertical) {
+					if (StateMachine.Instance.state == StateMachine.State.Falling) {
 						StateMachine.Instance.RequestChange (StateMachine.State.Grounded);
 					}
-				} 
-				else 
-				{
+				} else {
 					StateMachine.Instance.RequestChange (StateMachine.State.Death, true);
 				}
 				break;
-			case "Death":
-				StateMachine.Instance.RequestChange (StateMachine.State.Death, true);
-				break;
-			case "BonusScore":
-				ScoreKeeper.Instance.DoubleModifier();
-				break;
 			default:
-				if (isVertical && StateMachine.Instance.state == StateMachine.State.Grounded) 
-				{
+				if (isVertical && StateMachine.Instance.state == StateMachine.State.Grounded) {
 					StateMachine.Instance.RequestChange (StateMachine.State.Falling);
 				}
 				break;
 			}
+		} 
+		else if (StateMachine.Instance.state == StateMachine.State.Grounded) 
+		{
+			StateMachine.Instance.RequestChange (StateMachine.State.Falling);
 		}
 	}
 }

@@ -35,7 +35,12 @@ public class ScoreKeeper : Singleton<ScoreKeeper>
 		m_baseIncreasePerSecond += m_increasePerStage;
 	}
 
-	public void SetModifier(int modifier, float duration)
+	public void DoubleModifier()
+	{
+		SetModifier (2, 5);
+	}
+
+	void SetModifier(int modifier, float duration)
 	{
 		m_modifier = modifier;
 

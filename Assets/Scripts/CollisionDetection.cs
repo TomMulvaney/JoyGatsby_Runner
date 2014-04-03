@@ -80,19 +80,27 @@ public class CollisionDetection : MonoBehaviour
 			switch (hitTag) 
 			{
 			case "Untagged":
-				if (isVertical) {
-					if (StateMachine.Instance.state == StateMachine.State.Falling) {
+				if (isVertical) 
+				{
+					if (StateMachine.Instance.state == StateMachine.State.Falling) 
+					{
 						StateMachine.Instance.RequestChange (StateMachine.State.Grounded);
 					}
-				} else {
+				} 
+				else 
+				{
 					StateMachine.Instance.RequestChange (StateMachine.State.Death, true);
 				}
 				break;
 			case "Death":
 				StateMachine.Instance.RequestChange (StateMachine.State.Death, true);
 				break;
+			case "BonusScore":
+				ScoreKeeper.Instance.DoubleModifier();
+				break;
 			default:
-				if (isVertical && StateMachine.Instance.state == StateMachine.State.Grounded) {
+				if (isVertical && StateMachine.Instance.state == StateMachine.State.Grounded) 
+				{
 					StateMachine.Instance.RequestChange (StateMachine.State.Falling);
 				}
 				break;

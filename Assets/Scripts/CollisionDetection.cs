@@ -9,7 +9,9 @@ public class CollisionDetection : MonoBehaviour
 	[SerializeField]
 	private Transform[] m_horizontalOrigins;
 	[SerializeField]
-	private Transform[] m_verticalOrigins;
+	private Transform[] m_verticalOriginsBot;
+	[SerializeField]
+	private Transform[] m_verticalOriginsTop;
 	[SerializeField]
 	private string m_landingAudioEvent;
 	[SerializeField]
@@ -30,8 +32,15 @@ public class CollisionDetection : MonoBehaviour
 		
 		Vector3 gravityDirection = Vector3.up;
 		gravityDirection.y *= PlayerMove.Instance.gravityDirection;
-		
-		HandleCollision(CheckHit(gravityDirection, m_verticalOrigins));
+
+		if (gravityDirection.y > 0) 
+		{
+			HandleCollision (CheckHit (gravityDirection, m_verticalOriginsTop));
+		} 
+		else 
+		{
+			HandleCollision (CheckHit (gravityDirection, m_verticalOriginsBot));
+		}
 	}
 	
 	void OnStateChange(StateMachine.State newState)
@@ -45,8 +54,8 @@ public class CollisionDetection : MonoBehaviour
 	
 	void CheckState()
 	{
-		RaycastHit upHit = CheckHit (Vector3.up, m_verticalOrigins);
-		RaycastHit downHit = CheckHit (Vector3.down, m_verticalOrigins);
+		RaycastHit upHit = CheckHit (Vector3.up, m_verticalOriginsTop);
+		RaycastHit downHit = CheckHit (Vector3.down, m_verticalOriginsBot);
 
 		bool isGrounded = ((upHit.collider != null && !String.IsNullOrEmpty (upHit.collider.gameObject.tag)) || ( downHit.collider != null && !String.IsNullOrEmpty (downHit.collider.gameObject.tag)));
 		StateMachine.Instance.RequestChange ( isGrounded ? StateMachine.State.Grounded : StateMachine.State.Falling) ;
@@ -77,9 +86,10 @@ public class CollisionDetection : MonoBehaviour
 	// TODO: Don't do state checks in this method. Find another way, this is messy
 	void HandleCollision(RaycastHit hit)
 	{
-		if (hit.collider != null) {
-			bool isVertical = Mathf.Approximately (Mathf.Abs (Vector3.Dot (hit.normal, Vector3.right)), 0);
+		bool isVertical = Mathf.Approximately (Mathf.Abs (Vector3.Dot (hit.normal, Vector3.right)), 0);
 
+		if (hit.collider != null) 
+		{
 			string hitTag = hit.collider.gameObject.tag;
 
 			switch (hitTag) 
@@ -107,7 +117,7 @@ public class CollisionDetection : MonoBehaviour
 				break;
 			}
 		} 
-		else if (StateMachine.Instance.state == StateMachine.State.Grounded) 
+		else if (isVertical && StateMachine.Instance.state == StateMachine.State.Grounded) 
 		{
 			StateMachine.Instance.RequestChange (StateMachine.State.Falling);
 			//WingroveAudio.WingroveRoot.Instance.PostEvent(m_fallingAudioEvent);

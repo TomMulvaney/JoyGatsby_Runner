@@ -5,11 +5,12 @@ using Wingrove;
 public class MusicPlayer : MonoBehaviour 
 {
 	[SerializeField]
-	private string m_eventName;
+	private string[] m_musicEventNames;
 
 	void Start()
 	{
-		Debug.Log ("Posting event: " + m_eventName);
-		WingroveAudio.WingroveRoot.Instance.PostEvent (m_eventName);
+		string eventName = m_musicEventNames [Random.Range (0, m_musicEventNames.Length)];
+		Debug.Log ("Posting event: " + eventName);
+		WingroveAudio.WingroveRoot.Instance.PostEvent (eventName);
 	}
 }

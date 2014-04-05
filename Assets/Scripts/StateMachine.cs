@@ -59,15 +59,16 @@ public class StateMachine : Singleton<StateMachine>
 
 	public void RequestChange(State requestedState, bool shouldLock = false)
 	{
-		//Debug.Log(System.String.Format("RequestChange({0}, {1})", requestedState, shouldLock));
-		if (!m_locked || requestedState > m_nextState) 
+		if (requestedState != m_state) 
 		{
-			m_nextState = requestedState;	
-			m_locked = shouldLock;
-		} 
-		else 
-		{
-			Debug.Log("Request denied: " + requestedState);
+			//Debug.Log (System.String.Format ("RequestChange({0}, {1})", requestedState, shouldLock));
+			Debug.Log (System.String.Format ("({0} - {1})", m_state, requestedState));
+			if (!m_locked || requestedState > m_nextState) {
+				m_nextState = requestedState;	
+				m_locked = shouldLock;
+			} else {
+				Debug.Log ("Request denied: " + requestedState);
+			}
 		}
 	}
 }

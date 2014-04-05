@@ -39,7 +39,8 @@ public class StateMachine : Singleton<StateMachine>
 	{
 		if (m_state != m_nextState)
 		{
-			Debug.Log(m_state + " - " + m_nextState);
+			//Debug.Log(m_state + " - " + m_nextState);
+
 			m_locked = false;
 
 			if(PreStateChange != null)
@@ -58,7 +59,7 @@ public class StateMachine : Singleton<StateMachine>
 
 	public void RequestChange(State requestedState, bool shouldLock = false)
 	{
-		Debug.Log(System.String.Format("RequestChange({0}, {1})", requestedState, shouldLock));
+		//Debug.Log(System.String.Format("RequestChange({0}, {1})", requestedState, shouldLock));
 		if (!m_locked || requestedState > m_nextState) 
 		{
 			m_nextState = requestedState;	

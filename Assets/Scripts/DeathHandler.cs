@@ -13,7 +13,7 @@ public class DeathHandler : MonoBehaviour
 
 	void OnStateChange(StateMachine.State newState)
 	{
-		Debug.Log ("DH.OSC: " + newState);
+		//Debug.Log ("DH.OSC: " + newState);
 		if (newState == StateMachine.State.Death) 
 		{
 			transform.position = m_startLocation.position;

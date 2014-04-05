@@ -89,7 +89,7 @@ public class LevelGenerator : MonoBehaviour
 		pos.x =  m_totalNumSpawned * m_distanceThreshold; // TODO: There needs to be a precise x-position
 		newChunk.transform.localPosition = pos;
 
-		Debug.Log (newChunk.name + " - " + pos.x);
+		//Debug.Log (newChunk.name + " - " + pos.x);
 		
 		m_spawnedChunks.Add(newChunk.transform);
 

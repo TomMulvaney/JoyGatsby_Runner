@@ -28,18 +28,18 @@ public class CollisionDetection : MonoBehaviour
 	
 	void FixedUpdate ()
 	{
-		HandleCollision(CheckHit (Vector3.right, m_horizontalOrigins));	
+		HandleHorizontalCollision(CheckHit (Vector3.right, m_horizontalOrigins));	
 		
 		Vector3 gravityDirection = Vector3.up;
 		gravityDirection.y *= PlayerMove.Instance.gravityDirection;
 
 		if (gravityDirection.y > 0) 
 		{
-			HandleCollision (CheckHit (gravityDirection, m_verticalOriginsTop));
+			HandleVerticalCollision (CheckHit (gravityDirection, m_verticalOriginsTop));
 		} 
 		else 
 		{
-			HandleCollision (CheckHit (gravityDirection, m_verticalOriginsBot));
+			HandleVerticalCollision (CheckHit (gravityDirection, m_verticalOriginsBot));
 		}
 	}
 	
@@ -92,6 +92,7 @@ public class CollisionDetection : MonoBehaviour
 			switch (hitTag) 
 			{
 			case "Untagged":
+				Debug.Log("untagged case");
 				if (isVertical) 
 				{
 					if (StateMachine.Instance.state == StateMachine.State.Falling) 
@@ -105,15 +106,19 @@ public class CollisionDetection : MonoBehaviour
 				}
 				break;
 			default:
+				Debug.Log("default case");
+				/*
 				if (isVertical && StateMachine.Instance.state == StateMachine.State.Grounded) 
 				{
 					StateMachine.Instance.RequestChange (StateMachine.State.Falling);
 				}
+				*/
 				break;
 			}
 		} 
 		else if (isVertical && StateMachine.Instance.state == StateMachine.State.Grounded) 
 		{
+			Debug.Log("hitNothing");
 			StateMachine.Instance.RequestChange (StateMachine.State.Falling);
 		}
 	}
@@ -124,6 +129,14 @@ public class CollisionDetection : MonoBehaviour
 		{
 			switch(hit.collider.tag)
 			{
+			case "Untagged":
+				StateMachine.Instance.RequestChange (StateMachine.State.Grounded);
+				break;
+			case "Death":
+				StateMachine.Instance.RequestChange (StateMachine.State.Death, true);
+				break;
+			case "PowerUp":
+				break;
 			default:
 				break;
 			}
@@ -140,7 +153,10 @@ public class CollisionDetection : MonoBehaviour
 		{
 			switch(hit.collider.tag)
 			{
+			case "PowerUp":
+				break;
 			default:
+				StateMachine.Instance.RequestChange (StateMachine.State.Death, true);
 				break;
 			}
 		}

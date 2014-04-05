@@ -45,7 +45,6 @@ public class CollisionDetection : MonoBehaviour
 	
 	void OnStateChange(StateMachine.State newState)
 	{
-		//Debug.Log ("ColiDet.OSC - " + newState);
 		if (newState == StateMachine.State.Transition) 
 		{
 			CheckState();
@@ -77,8 +76,6 @@ public class CollisionDetection : MonoBehaviour
 				Debug.DrawLine(origin.position + m_debugLineOffset, origin.position + m_debugLineOffset + (direction * m_castDistance), Color.red);
 			}
 		}
-
-		//Debug.Log ("hit.collider: " + hit.collider);
 		
 		return hit;
 	}
@@ -100,7 +97,6 @@ public class CollisionDetection : MonoBehaviour
 					if (StateMachine.Instance.state == StateMachine.State.Falling) 
 					{
 						StateMachine.Instance.RequestChange (StateMachine.State.Grounded);
-						//WingroveAudio.WingroveRoot.Instance.PostEvent(m_landingAudioEvent);
 					}
 				} 
 				else 
@@ -112,7 +108,6 @@ public class CollisionDetection : MonoBehaviour
 				if (isVertical && StateMachine.Instance.state == StateMachine.State.Grounded) 
 				{
 					StateMachine.Instance.RequestChange (StateMachine.State.Falling);
-					//WingroveAudio.WingroveRoot.Instance.PostEvent(m_fallingAudioEvent);
 				}
 				break;
 			}
@@ -120,7 +115,34 @@ public class CollisionDetection : MonoBehaviour
 		else if (isVertical && StateMachine.Instance.state == StateMachine.State.Grounded) 
 		{
 			StateMachine.Instance.RequestChange (StateMachine.State.Falling);
-			//WingroveAudio.WingroveRoot.Instance.PostEvent(m_fallingAudioEvent);
+		}
+	}
+
+	void HandleVerticalCollision(RaycastHit hit)
+	{
+		if (hit.collider != null) 
+		{
+			switch(hit.collider.tag)
+			{
+			default:
+				break;
+			}
+		}
+		else
+		{
+			StateMachine.Instance.RequestChange (StateMachine.State.Falling);
+		}
+	}
+
+	void HandleHorizontalCollision(RaycastHit hit)
+	{
+		if (hit.collider != null) 
+		{
+			switch(hit.collider.tag)
+			{
+			default:
+				break;
+			}
 		}
 	}
 }

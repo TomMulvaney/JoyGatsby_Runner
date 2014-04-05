@@ -12,10 +12,6 @@ public class CollisionDetection : MonoBehaviour
 	private Transform[] m_verticalOriginsBot;
 	[SerializeField]
 	private Transform[] m_verticalOriginsTop;
-	[SerializeField]
-	private string m_landingAudioEvent;
-	[SerializeField]
-	private string m_fallingAudioEvent;
 	
 	Vector3 m_debugLineOffset = new Vector3 (0, 0, -1);
 	
@@ -78,49 +74,6 @@ public class CollisionDetection : MonoBehaviour
 		}
 		
 		return hit;
-	}
-
-	// TODO: Don't do state checks in this method. Find another way, this is messy
-	void HandleCollision(RaycastHit hit)
-	{
-		bool isVertical = Mathf.Approximately (Mathf.Abs (Vector3.Dot (hit.normal, Vector3.right)), 0);
-
-		if (hit.collider != null) 
-		{
-			string hitTag = hit.collider.gameObject.tag;
-
-			switch (hitTag) 
-			{
-			case "Untagged":
-				Debug.Log("untagged case");
-				if (isVertical) 
-				{
-					if (StateMachine.Instance.state == StateMachine.State.Falling) 
-					{
-						StateMachine.Instance.RequestChange (StateMachine.State.Grounded);
-					}
-				} 
-				else 
-				{
-					StateMachine.Instance.RequestChange (StateMachine.State.Death, true);
-				}
-				break;
-			default:
-				Debug.Log("default case");
-				/*
-				if (isVertical && StateMachine.Instance.state == StateMachine.State.Grounded) 
-				{
-					StateMachine.Instance.RequestChange (StateMachine.State.Falling);
-				}
-				*/
-				break;
-			}
-		} 
-		else if (isVertical && StateMachine.Instance.state == StateMachine.State.Grounded) 
-		{
-			Debug.Log("hitNothing");
-			StateMachine.Instance.RequestChange (StateMachine.State.Falling);
-		}
 	}
 
 	void HandleVerticalCollision(RaycastHit hit)

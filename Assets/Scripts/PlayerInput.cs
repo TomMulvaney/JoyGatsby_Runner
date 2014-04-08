@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Wingrove;
 
 public class PlayerInput : MonoBehaviour 
 {
@@ -8,8 +7,6 @@ public class PlayerInput : MonoBehaviour
 	private float m_dragThreshold;
 	[SerializeField]
 	private InputType m_inputType;
-	[SerializeField]
-	private string m_inputAudioEvent;
 
 	enum InputType
 	{
@@ -27,7 +24,11 @@ public class PlayerInput : MonoBehaviour
 		} 
 		else if (m_inputType == InputType.Tap && pressed) 
 		{
-			WingroveAudio.WingroveRoot.Instance.PostEvent(m_inputAudioEvent);
+			if(StateMachine.Instance.state == StateMachine.State.Falling)
+			{
+				LewisAudio.Instance.PlayFall();
+			}
+
 			PlayerMove.Instance.ReverseGravity();
 			StateMachine.Instance.RequestChange(StateMachine.State.Falling);
 		}
@@ -45,6 +46,11 @@ public class PlayerInput : MonoBehaviour
 
 				if (gravReversed) 
 				{
+					if(StateMachine.Instance.state == StateMachine.State.Falling)
+					{
+						LewisAudio.Instance.PlayFall();
+					}
+
 					StateMachine.Instance.RequestChange (StateMachine.State.Falling);
 				}
 			}

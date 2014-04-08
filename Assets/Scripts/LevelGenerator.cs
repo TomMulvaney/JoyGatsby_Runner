@@ -15,6 +15,10 @@ public class LevelGenerator : MonoBehaviour
 	private int m_distanceThreshold = 100;
 	[SerializeField]
 	private GameObject[] m_chunkPrefabs;
+	[SerializeField]
+	private GameObject[] m_debugChunkPrefabs;
+	[SerializeField]
+	private bool m_useDebugChunks;
 
 	int m_totalNumSpawned = 0;
 
@@ -83,7 +87,13 @@ public class LevelGenerator : MonoBehaviour
 	void SpawnChunk()
 	{
 		// Spawn next level prefab
-		GameObject newChunk = SpawningHelpers.InstantiateUnderWithIdentityTransforms(m_chunkPrefabs[Random.Range(0, m_chunkPrefabs.Length)], m_levelParent);
+
+		GameObject chunkToSpawn = m_useDebugChunks ? m_debugChunkPrefabs [Random.Range (0, m_debugChunkPrefabs.Length)] :
+														m_chunkPrefabs [Random.Range (0, m_chunkPrefabs.Length)];	
+
+		GameObject newChunk = SpawningHelpers.InstantiateUnderWithIdentityTransforms(chunkToSpawn, m_levelParent);
+
+		//GameObject newChunk = SpawningHelpers.InstantiateUnderWithIdentityTransforms(m_chunkPrefabs[Random.Range(0, m_chunkPrefabs.Length)], m_levelParent);
 
 		ColorChunk (newChunk);
 		
